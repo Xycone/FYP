@@ -1,5 +1,5 @@
 # Introduction
-This is a backend application developed for part of my Final Year Project (FYP). The application, developed using the FastAPI web framework, provides API endpoints for transcribing audio files using OpenAI's Whisper ASR Model.
+This is a backend application developed for part of my 3 months long Final Year Project. The application, developed using the FastAPI web framework, provides API endpoints for transcribing audio files using OpenAI's Whisper ASR Model.
 
 ## Installation
 To install and run the Audio File Transcription Application, follow these steps:
