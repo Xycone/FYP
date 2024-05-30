@@ -25,7 +25,7 @@ class ModelManager:
         return self
     
     def unload_model(self):
-        if self.__model is not None:
+        if self.__model:
             torch.cuda.empty_cache()
             self.__model = None
 
