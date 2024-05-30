@@ -4,13 +4,13 @@ from fastapi.responses import JSONResponse
 import torch
 
 from typing import List
-from model.modelManager import ModelManager
+from model.whisperManager import WhisperManager
 from dto.transcriptionDTO import TranscriptionDTO
 from tempfile import NamedTemporaryFile
 
 # Create model_manager object and load the default "base" model
-model_manager = (
-    ModelManager(
+whisper = (
+    WhisperManager(
         "base",
         "cuda" if torch.cuda.is_available() else "cpu"
     )
@@ -24,9 +24,9 @@ async def transcribe(form_data: TranscriptionDTO = Depends(), files: List[Upload
     if not files:
         raise HTTPException(status_code=400, detail="No Files Uploaded")
     
-    if form_data.model_size != model_manager.get_size():
+    if form_data.model_size != whisper.get_size():
         # Update model size and load the new models
-        model_manager.unload_model().set_size(form_data.model_size).load_model()
+        whisper.unload_model().set_size(form_data.model_size).load_model()
 
     response = []
 
@@ -35,7 +35,7 @@ async def transcribe(form_data: TranscriptionDTO = Depends(), files: List[Upload
             with open(temp.name, 'wb') as temp_file:
                 temp_file.write(file.file.read())
             
-            transcript = model_manager.transcribe(temp.name)
+            transcript = whisper.transcribe(temp.name)
             response.append(
                 {
                     "filename": file.filename,
