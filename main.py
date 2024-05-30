@@ -1,41 +1,42 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from fastapi.responses import JSONResponse
+
 import torch
-import whisper
-from enum import Enum
+
 from typing import List
+from model.modelManager import ModelManager
+from dto.transcriptionDTO import TranscriptionDTO
 from tempfile import NamedTemporaryFile
 
-
-torch.cuda.is_available()
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-model = whisper.load_model("base", device=DEVICE)
-
-class ModelSize(str, Enum):
-    tiny = "tiny"
-    base = "base"
-    small = "small"
-    medium = "medium"
-    large = "large"
-
+# Create model_manager object and load the default "base" model
+model_manager = (
+    ModelManager(
+        "base",
+        "cuda" if torch.cuda.is_available() else "cpu"
+    )
+    .load_model()
+)
 
 app = FastAPI()
 
 @app.post("/transcribe")
-async def transcribe(files: List[UploadFile] = File( ... )):
+async def transcribe(form_data: TranscriptionDTO = Depends(), files: List[UploadFile] = File(...)):
     if not files:
         raise HTTPException(status_code=400, detail="No Files Uploaded")
     
-    transcripts = []
+    if form_data.model_size != model_manager.get_size():
+        # Update model size and load the new models
+        model_manager.set_size(form_data.model_size).load_model()
+
+    response = []
 
     for file in files:
         with NamedTemporaryFile(delete=True) as temp:
-            with open(temp.name, "wb") as temp_file:
+            with open(temp.name, 'wb') as temp_file:
                 temp_file.write(file.file.read())
-
-            transcript = model.transcribe(temp.name)
-            transcripts.append(
+            
+            transcript = model_manager.transcribe(temp.name)
+            response.append(
                 {
                     "filename": file.filename,
                     "language": transcript["language"],
@@ -43,12 +44,5 @@ async def transcribe(files: List[UploadFile] = File( ... )):
                 }
             )
     
-    return JSONResponse(content={"transcripts": transcripts})
-
-@app.post("/set-model-size/{size}")
-async def set_model_size(size: ModelSize):
-    global model
-    torch.cuda.empty_cache()
-    model = whisper.load_model(size, device=DEVICE)
-
-    return JSONResponse(content={"message": f"Model size set to {size}"})
+    return JSONResponse(content={"transcripts": response})
+    
