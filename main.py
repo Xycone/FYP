@@ -26,7 +26,7 @@ async def transcribe(form_data: TranscriptionDTO = Depends(), files: List[Upload
     
     if form_data.model_size != model_manager.get_size():
         # Update model size and load the new models
-        model_manager.set_size(form_data.model_size).load_model()
+        model_manager.unload_model().set_size(form_data.model_size).load_model()
 
     response = []
 

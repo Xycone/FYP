@@ -24,9 +24,20 @@ class ModelManager:
         self.__model = whisper.load_model(self.__size, self.__device)
         return self
     
+    def unload_model(self):
+        if self.__model is not None:
+            torch.cuda.empty_cache()
+            self.__model = None
+
+        return self
+    
     def transcribe(self, file_path):
-        if self.__model is None:
+        if self.__model is None:    
             raise RuntimeError("Model has not been loaded. Call load_model() first.")
         
-        transcript = self.__model.transcribe(file_path)
+        try:
+            transcript = self.__model.transcribe(file_path)
+        except whisper.ModelNotFoundError as e:
+            raise RuntimeError(f"Model not found: {e}")
+        
         return transcript
