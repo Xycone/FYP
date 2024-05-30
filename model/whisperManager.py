@@ -24,11 +24,11 @@ class WhisperManager:
         self.__model = whisper.load_model(self.__size, self.__device)
         return self
     
-    def unload_model(self):
-        if self.__model:
+    def unload_model(self):   
+        if self.__device == "cuda":
             torch.cuda.empty_cache()
-            self.__model = None
 
+        self.__model = None
         return self
     
     def transcribe(self, file_path):
