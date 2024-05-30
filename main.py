@@ -40,7 +40,7 @@ async def transcribe(form_data: TranscriptionDTO = Depends(), files: List[Upload
                 {
                     "filename": file.filename,
                     "language": transcript["language"],
-                    "transcript": transcript["text"]
+                    "transcript": transcript["segments"]
                 }
             )
     
