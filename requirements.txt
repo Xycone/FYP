@@ -3,4 +3,6 @@ aiofiles
 python-multipart
 uvicorn
 torch
+speechbrain==0.5.16
+pydub
 

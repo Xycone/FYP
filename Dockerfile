@@ -8,7 +8,11 @@ RUN apt-get update && apt-get install git -y
 
 RUN pip install -r requirements.txt
 
+RUN pip install "git+https://github.com/speechbrain/speechbrain.git"
+
 RUN pip install "git+https://github.com/openai/whisper.git"
+
+RUN pip install "git+https://github.com/pyannote/pyannote-audio"
 
 RUN apt-get update && apt-get install -y ffmpeg
 

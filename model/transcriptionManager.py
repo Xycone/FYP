@@ -4,7 +4,7 @@ import torch
 from model.modelSizes import ModelSizes
 from model.deviceTypes import DeviceTypes
 
-class WhisperManager:
+class TranscriptionManager:
     # Initialiser
     def __init__(self, size: ModelSizes, device: DeviceTypes):
         self.__size = size
@@ -19,7 +19,7 @@ class WhisperManager:
         self.__size = size
         return self
 
-    # Functions
+    # Methods
     def load_model(self):
         self.__model = whisper.load_model(self.__size, self.__device)
         return self

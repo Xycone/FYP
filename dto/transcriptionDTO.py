@@ -3,4 +3,5 @@ from model.modelSizes import ModelSizes
 
 class TranscriptionDTO(BaseModel):
     model_size: ModelSizes
-    speaker_diarisation: bool
+    diarisation: bool
+    num_speakers: int
