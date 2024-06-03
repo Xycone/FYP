@@ -30,14 +30,15 @@ async def transcribe(form_data: TranscriptionDTO = Depends(), files: List[Upload
     if not files:
         raise HTTPException(status_code=400, detail="No Files Uploaded")
     
+    # Replaces the currently loaded model with the new model of the specified size
     if form_data.model_size != whisper.get_size():
-        # Updates model size and loads the new model
         whisper.unload_model().set_size(form_data.model_size).load_model()
 
     response = []
 
     for file in files:
         with NamedTemporaryFile(delete=True) as temp:
+            # Copies the audio file to the temporary file
             with open(temp.name, 'wb') as temp_file:
                 temp_file.write(file.file.read())
             
