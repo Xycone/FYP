@@ -9,8 +9,6 @@ from model.diarisationManager import DiarisationManager
 from dto.transcriptionDTO import TranscriptionDTO
 from tempfile import NamedTemporaryFile
 
-import numpy as np
-
 # Create model_manager object and load the default "base" model
 whisper = (
     TranscriptionManager(
