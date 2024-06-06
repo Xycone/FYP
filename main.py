@@ -23,7 +23,7 @@ diariser = DiarisationManager()
 app = FastAPI()
 
 # Embedding model used for speaker diarisation requires audio file to be mono (single channel)
-@app.post("/transcribe")
+@app.post("/transcribe-files")
 async def transcribe(form_data: TranscriptionDTO = Depends(), files: List[UploadFile] = File(...)):
     if not files:
         raise HTTPException(status_code=400, detail="No Files Uploaded")
@@ -51,7 +51,7 @@ async def transcribe(form_data: TranscriptionDTO = Depends(), files: List[Upload
                 segments = results["segments"]
 
             response.append(
-                 {
+                {
                     "filename": file.filename,
                     "language": results["language"],
                     "segments": segments
