@@ -36,7 +36,7 @@ async def transcribe(form_data: TranscriptionDTO = Depends(), files: List[Upload
 
     for file in files:
         with NamedTemporaryFile(delete=True) as temp:
-            # Copies the audio file to the temporary file
+            # Copies the uploaded audio file to the temporary file
             with open(temp.name, 'wb') as temp_file:
                 temp_file.write(file.file.read())
             
