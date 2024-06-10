@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.status import HTTP_204_NO_CONTENT
 
 import torch
 
@@ -68,4 +69,8 @@ async def transcribe(form_data: TranscriptionDTO = Depends(), files: List[Upload
             )
             
     return JSONResponse(content={"transcripts": response})
+
+@app.options("/transcribe-files")
+async def options_transcribe_files():
+    return JSONResponse(status_code=HTTP_204_NO_CONTENT)
     
