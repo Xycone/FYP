@@ -1,7 +1,5 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from fastapi.responses import JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
-from starlette.status import HTTP_204_NO_CONTENT
 
 import torch
 
@@ -23,14 +21,6 @@ whisper = (
 diariser = DiarisationManager()
 
 app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000/"],
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["*"],
-)
 
 # Embedding model used for speaker diarisation requires audio file to be mono (single channel)
 @app.post("/transcribe-files")
@@ -69,8 +59,3 @@ async def transcribe(form_data: TranscriptionDTO = Depends(), files: List[Upload
             )
             
     return JSONResponse(content={"transcripts": response})
-
-@app.options("/transcribe-files")
-async def options_transcribe_files():
-    return JSONResponse(status_code=HTTP_204_NO_CONTENT)
-    
